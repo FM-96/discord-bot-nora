@@ -1,6 +1,7 @@
 module.exports = {
 	cleanup,
 	getChannelMessages,
+	isProtected,
 };
 
 /**
@@ -19,7 +20,7 @@ async function cleanup(channel, user, number) {
 		return 0;
 	} else {
 		// remove all messages that have a shield emoji reaction
-		flatMsgs = flatMsgs.filter(msg => msg.reactions.map(r => r.emoji).find(e => e.name === '🛡') === undefined);
+		flatMsgs = flatMsgs.filter(msg => !isProtected(msg));
 
 		const deleteBulk = [];
 		const deleteSingle = [];
@@ -122,4 +123,13 @@ async function getChannelMessages(channel, user, amount, before) {
 	} while (!done);
 
 	return result;
+}
+
+/**
+ * Returns whether a message is protected from removal
+ * @param {Message} message The message to check for protection
+ * @returns {Boolean} Whether the message is protected
+ */
+function isProtected(message) {
+	return message.reactions.some(e => e.emoji.name === '🛡' || e.emoji.name === '🛡️'); // these are different code points
 }

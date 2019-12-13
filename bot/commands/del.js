@@ -5,6 +5,11 @@ module.exports = {
 	command: 'del',
 	ownerOnly: true,
 	run: async (message, context) => {
+		const reaction = await message.react('🛡️');
+		if (!bulkMessages.isProtected(reaction.message)) {
+			await message.channel.send('**ABORT: MESSAGE PROTECTION NOT WORKING**');
+			return;
+		}
 		await message.delete();
 		const msgSplit = message.content.split(' ');
 		if (msgSplit.length < 3) {

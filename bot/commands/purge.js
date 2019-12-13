@@ -8,6 +8,11 @@ module.exports = {
 	usage: '["*"|"all"|user ID]',
 	ownerOnly: true,
 	run: async (message, context) => {
+		const reaction = await message.react('🛡️');
+		if (!bulkMessages.isProtected(reaction.message)) {
+			await message.channel.send('**ABORT: MESSAGE PROTECTION NOT WORKING**');
+			return;
+		}
 		// TODO better security against accidental purge
 		let user;
 		const msgSplit = message.content.split(' ');
