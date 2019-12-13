@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Nora</title>
+</head>
+<body>
+	<form action="/api/nora/playing" method="post">
+		<input type="text" name="playing" placeholder="playing...">
+		<input type="submit">
+	</form>
+	<form action="/api/nora/message" method="post">
+		<input type="text" name="channel" placeholder="channel">
+		<input type="text" name="message" placeholder="message">
+		<input type="submit">
+	</form>
+	<form action="/api/nora/reconnect" method="post">
+		<input type="submit" value="Reconnect!">
+	</form>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Nora - Showpacts</title>
+	<link rel="stylesheet" href="/assets/css/showpact.css">
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="/assets/js/showpact.js"></script>
+</head>
+<body>
+	<div id="newpact" class="pact">
+		<div class="channel"><input type="text" name="channelId" placeholder="Channel ID"></div>
+		<div class="column trigger">
+			<div class="title">Trigger</div>
+			<input type="text" name="triggerUserId" placeholder="User ID">
+			<input type="text" name="triggerStatusUrl" placeholder="Status URL">
+			<input type="text" name="triggerShowName" placeholder="Show">
+		</div>
+		<div class="column triggered">
+			<div class="title">Triggered</div>
+			<input type="text" name="triggeredUserId" placeholder="User ID">
+			<input type="text" name="triggeredStatusUrl" placeholder="Status URL">
+			<input type="text" name="triggeredShowName" placeholder="Show">
+		</div>
+	</div>
+	<div id="pacts">Loading Pacts...</div>
+</body>
+</html>
