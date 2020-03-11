@@ -3,7 +3,6 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
-const botToken = require('./load-bot-token.js');
 const globalStorage = require('./globalStorage.js');
 
 module.exports = {
@@ -57,7 +56,7 @@ async function resetClient() {
 	attachListeners(module.exports.instance);
 
 	// log in
-	await module.exports.instance.login(botToken);
+	await module.exports.instance.login(process.env.BOT_TOKEN);
 	globalStorage.set('loginTime', Date.now());
 
 	console.log('Successfully logged in');

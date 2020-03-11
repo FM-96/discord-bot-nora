@@ -2,4 +2,3 @@ node_modules/
 package-lock.json
 .env
 senate.json
-discord_bot_token.txt
