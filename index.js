@@ -13,6 +13,7 @@ mongoose.Promise = Promise;
 const path = require('path');
 
 // load own modules
+const egsCheck = require('./bot/egsCheck.js');
 const globalStorage = require('./bot/globalStorage.js');
 const routes = require('./app/routes.js');
 const showpact = require('./app/showpact/showpact.controller.js');
@@ -58,6 +59,7 @@ later.setInterval(showpact.checkForUpdates, twiceHourlySchedule);
 later.setInterval(strawpoll.processAllPolls, hourlySchedule);
 // later.setInterval(remindOfPancake, weeklySchedule);
 later.setInterval(stanleyParableCountdown, stanleyParableMonthly);
+later.setInterval(egsCheck.check, hourlySchedule);
 
 /* functions */
 // function remindOfPancake() {
