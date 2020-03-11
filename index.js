@@ -34,7 +34,7 @@ web.app.use(function (req, res) {
 	res.sendStatus(404);
 });
 
-mongoose.connect(process.env.DATABASE, {useNewUrlParser: true}).then(result => {
+mongoose.connect(process.env.DATABASE, {useNewUrlParser: true, useUnifiedTopology: true}).then(result => {
 	console.log('Successfully connected to database');
 
 	// start webserver
