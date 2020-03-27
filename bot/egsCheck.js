@@ -64,7 +64,7 @@ const VARIABLES = {
 async function check() {
 	try {
 		const data = await graphql.request(QUERY, VARIABLES);
-		const currentGames = data.Catalog.catalogOffers.elements.filter(e => e.promotions.promotionalOffers.length > 0 && e.promotions.promotionalOffers[0].promotionalOffers.some(filterPromotionisFree));
+		const currentGames = data.Catalog.catalogOffers.elements.filter(e => e.promotions && e.promotions.promotionalOffers.length > 0 && e.promotions.promotionalOffers[0].promotionalOffers.some(filterPromotionisFree));
 		const dbGames = await EgsGame.find({}).exec();
 
 		// remove games from DB that are no longer free
