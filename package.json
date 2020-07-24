@@ -1,6 +1,6 @@
 {
   "name": "discord-bot-nora",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Personal Discord bot.",
   "main": "index.js",
   "scripts": {
