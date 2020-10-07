@@ -1,6 +1,6 @@
 const yargsParser = require('yargs-parser');
 
-const commandHandler = require('../command-handler.js');
+const commandHandler = require('command-handler');
 
 module.exports = {
 	command: 'prefix',

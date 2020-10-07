@@ -1,7 +1,7 @@
 const path = require('path');
 
 const client = require('../client.js');
-const commandHandler = require('../command-handler.js');
+const commandHandler = require('command-handler');
 const web = require('../../webserver.js');
 
 const userId = require('../../config/user_ids.js');

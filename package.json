@@ -1,6 +1,6 @@
 {
   "name": "discord-bot-nora",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Personal Discord bot.",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "base65536": "^1.2.2",
     "cheerio": "^0.22.0",
+    "command-handler": "github:FM-96/command-handler#semver:0.3.x",
     "discord.js": "^11.3.2",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
