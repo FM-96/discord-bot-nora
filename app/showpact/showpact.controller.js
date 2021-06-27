@@ -15,9 +15,9 @@ function addPact(req, res) {
 	const newPact = new Showpact(req.body);
 
 	// check that the channel and both users are valid
-	const channel = client.instance.channels.get(newPact.discordChannelId);
-	const triggerUser = client.instance.users.get(newPact.trigger.discordUserId);
-	const triggeredUser = client.instance.users.get(newPact.triggered.discordUserId);
+	const channel = client.instance.channels.cache.get(newPact.discordChannelId);
+	const triggerUser = client.instance.users.cache.get(newPact.trigger.discordUserId);
+	const triggeredUser = client.instance.users.cache.get(newPact.triggered.discordUserId);
 	if (!channel || channel.type !== 'text') {
 		res.status(400).send('Invalid Channel ID');
 		return;
@@ -146,7 +146,7 @@ function checkForUpdates() {
 					}
 
 					if (message.length > 0) {
-						updateMessages.push(client.instance.channels.get(pactUpdate.pact.discordChannelId).sendMessage(message));
+						updateMessages.push(client.instance.channels.cache.get(pactUpdate.pact.discordChannelId).send(message));
 					}
 				}
 			}
@@ -354,7 +354,7 @@ function requestShows(requestOptions) {
 
 function sendReminders() {
 	// TODO
-	// client.instance.channels.get('268835208512536576').sendMessage('sendReminders');
+	// client.instance.channels.cache.get('268835208512536576').send('sendReminders');
 }
 
 function updatePact(pact) {

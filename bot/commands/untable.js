@@ -25,7 +25,7 @@ module.exports = {
 
 		let tableMessagesChannel = message.channel;
 		if (argv.channel) {
-			tableMessagesChannel = message.client.channels.get(argv.channel);
+			tableMessagesChannel = message.client.channels.cache.get(argv.channel);
 			if (!tableMessagesChannel) {
 				return;
 			}
@@ -35,7 +35,7 @@ module.exports = {
 
 		// get content(s) of message(s) with table
 		for (const msgId of argv.message) {
-			const msg = await tableMessagesChannel.fetchMessage(msgId);
+			const msg = await tableMessagesChannel.messages.fetch(msgId);
 			if (!msg.content.startsWith('```\n') || !msg.content.endsWith('\n```')) {
 				// not a valid table
 				return;

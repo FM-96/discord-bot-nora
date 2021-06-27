@@ -19,7 +19,7 @@ module.exports = {
 		} else {
 			message.channel.send('Thank you for notifying me, I\'ll see if I can fix that.').then(
 				function (res) {
-					const offlineBotName = message.client.users.get(offlineBotId).username;
+					const offlineBotName = message.client.users.cache.get(offlineBotId).username;
 					childProcess.exec('pm2 restart "' + offlineBotName + '"', function (error, stdout, stderr) {
 						if (error) {
 							return Promise.reject(error);

@@ -63,8 +63,8 @@ later.setInterval(egsCheck.check, hourlySchedule);
 
 /* functions */
 // function remindOfPancake() {
-// 	if (!client.instance.guilds.get('138404620128092160').members.get('197553759151194112')) {
-// 		client.instance.channels.get('138404620128092160').sendMessage('Hey <@103267161757204480>, you still haven\'t readded Pancake yet!').catch(
+// 	if (!client.instance.guilds.cache.get('138404620128092160').members.cache.get('197553759151194112')) {
+// 		client.instance.channels.cache.get('138404620128092160').send('Hey <@103267161757204480>, you still haven\'t readded Pancake yet!').catch(
 // 			function (err) {
 // 				console.error(err);
 // 			}
@@ -81,5 +81,5 @@ function stanleyParableCountdown() {
 	} else {
 		message = `:tada: **You did it!** You didn't play *The Stanley Parable* for 5 years! :tada:`;
 	}
-	client.instance.channels.get('133750021861408768').send(message).catch(console.error);
+	client.instance.channels.cache.get('133750021861408768').send(message).catch(console.error);
 }

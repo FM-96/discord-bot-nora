@@ -39,18 +39,18 @@ function addPoll(pollId, channelId) {
 		}
 	).then(
 		function (savedPoll) {
-			const channel = client.channels.get(channelId);
+			const channel = client.channels.cache.get(channelId);
 
 			if (savedPoll === false) {
 				// this poll is already added to this channel
-				return channel.sendMessage('This poll is already added to this channel.');
+				return channel.send('This poll is already added to this channel.');
 			} else {
 				let message = 'Initial scan of poll #' + savedPoll.pollId + ': ' + savedPoll.pollQuestion + '\n';
 				message += 'Scan done at ' + savedPoll.pollResults[0].scanDate.toISOString().slice(0, -5) + 'Z\n';
 				for (const option of savedPoll.pollResults[0].options) {
 					message += option.text + ': ' + option.count + ' votes (' + (Math.round(option.count / savedPoll.pollResults[0].totalVotes * 10000) / 100) + '%)\n';
 				}
-				return channel.sendCode('', message);
+				return channel.send('```\n' + message + '\n```');
 			}
 		}
 	);
@@ -116,8 +116,8 @@ function processAllPolls() {
 					message += optionNew.text + ': ' + optionNew.count + ' votes [+' + (optionNew.count - optionOld.count) + '] (' + percentageNew + '% [' + percentageDifference + '%])\n';
 				}
 				for (const channelId of poll.channels) {
-					const channel = client.channels.get(channelId);
-					allMessages.push(channel.sendCode('', message));
+					const channel = client.channels.cache.get(channelId);
+					allMessages.push(channel.send('```\n' + message + '\n```'));
 				}
 			}
 			return allMessages;

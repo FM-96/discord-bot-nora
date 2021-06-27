@@ -99,7 +99,7 @@ async function getChannelMessages(channel, user, amount, before) {
 		if (lastMessage !== null) {
 			options.before = lastMessage;
 		}
-		const messages = await channel.fetchMessages(options);
+		const messages = await channel.messages.fetch(options);
 		console.log('got ' + messages.size + ' messages');
 		if (messages.size) {
 			let correctUser = 0;
@@ -131,5 +131,5 @@ async function getChannelMessages(channel, user, amount, before) {
  * @returns {Boolean} Whether the message is protected
  */
 function isProtected(message) {
-	return message.reactions.some(e => e.emoji.name === '🛡' || e.emoji.name === '🛡️'); // these are different code points
+	return message.reactions.cache.some(e => e.emoji.name === '🛡' || e.emoji.name === '🛡️'); // these are different code points
 }

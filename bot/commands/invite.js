@@ -16,7 +16,7 @@ module.exports = {
 
 		let targetMember;
 		try {
-			targetMember = await message.guild.fetchMember(targetId);
+			targetMember = await message.guild.members.fetch(targetId);
 		} catch (err) {
 			return message.channel.send(`Error: ${err.message}`);
 		}
@@ -24,7 +24,7 @@ module.exports = {
 			if (!targetMember.user.bot) {
 				return message.channel.send('Error: User is not a bot.');
 			}
-			const managedRole = targetMember.roles.filter(e => e.managed).first();
+			const managedRole = targetMember.roles.cache.filter(e => e.managed).first();
 			if (!managedRole) {
 				return message.channel.send('Error: Bot doesn\'t have a managed role.');
 			}

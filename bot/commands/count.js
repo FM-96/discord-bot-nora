@@ -27,7 +27,7 @@ module.exports = {
 		if (user) {
 			countSelf = user === message.client.user.id;
 			try {
-				username = message.client.users.get(user).username;
+				username = message.client.users.cache.get(user).username;
 			} catch (err) {
 				username = 'user with ID ' + user;
 			}

@@ -32,14 +32,14 @@ function attachListeners(client) {
 	}
 }
 
-async function logout() {
+function logout() {
 	// destroy old client
 	if (module.exports.instance) {
 		const client = module.exports.instance;
 		module.exports.instance = undefined;
 		// remove all listeners to prevent the disconnect event from firing and *also* logging the bot back in
 		client.removeAllListeners();
-		await client.destroy();
+		client.destroy();
 	}
 }
 
@@ -48,11 +48,15 @@ async function resetClient() {
 	if (module.exports.instance) {
 		// remove all listeners to prevent the disconnect event from firing and *also* logging the bot back in
 		module.exports.instance.removeAllListeners();
-		await module.exports.instance.destroy();
+		module.exports.instance.destroy();
 	}
 
 	// create new client
-	module.exports.instance = new Discord.Client();
+	module.exports.instance = new Discord.Client({
+		ws: {
+			intents: Discord.Intents.ALL,
+		},
+	});
 	attachListeners(module.exports.instance);
 
 	// log in

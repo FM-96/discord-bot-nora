@@ -20,7 +20,11 @@ module.exports = (messageReaction, user) => {
 		const senateLogins = [];
 		for (const bot of senate) {
 			if (/* bot.id !== client.instance.user.id && */messageReaction.message.channel.members.get(bot.id)) {
-				const senateClient = new Discord.Client();
+				const senateClient = new Discord.Client({
+					ws: {
+						intents: Discord.Intents.NON_PRIVILEGED,
+					},
+				});
 				senateClients.push(senateClient);
 				senateLogins.push(senateClient.login(bot.token));
 			}
@@ -30,7 +34,7 @@ module.exports = (messageReaction, user) => {
 			function (result) {
 				console.log('Starting vote manipulation');
 				for (const senateClient of senateClients) {
-					senateClient.channels.get(messageReaction.message.channel.id).fetchMessage(messageReaction.message.id).then(
+					senateClient.channels.cache.get(messageReaction.message.channel.id).messages.fetch(messageReaction.message.id).then(
 						function (message) {
 							console.log('Voting...');
 							message.react(messageReaction.emoji).then(

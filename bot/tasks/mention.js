@@ -3,7 +3,7 @@
 module.exports = {
 	name: 'X-mention',
 	limited: true,
-	test: async (message) => message.isMentioned(message.client.user),
+	test: async (message) => message.mentions.has(message.client.user.id),
 	run: async (message, context) => {
 		// if (message.content.toLowerCase().includes('version')) {
 		// 	message.channel.send('v' + botVersion);

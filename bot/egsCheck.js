@@ -80,7 +80,7 @@ async function check() {
 		for (const currentGame of currentGames) {
 			if (!dbGames.map(e => e.gameId).includes(currentGame.id)) {
 				const freePromotion = currentGame.promotions.promotionalOffers[0].promotionalOffers.find(filterPromotionisFree);
-				await client.instance.channels.get('133750021861408768').send(`**${currentGame.title}** is free on EGS until ${freePromotion.endDate}:\nhttps://www.epicgames.com/store/en-US/product/${currentGame.productSlug}`);
+				await client.instance.channels.cache.get('133750021861408768').send(`**${currentGame.title}** is free on EGS until ${freePromotion.endDate}:\nhttps://www.epicgames.com/store/en-US/product/${currentGame.productSlug}`);
 				const newDbGame = new EgsGame({gameId: currentGame.id});
 				await newDbGame.save();
 			}

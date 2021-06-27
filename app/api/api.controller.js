@@ -7,18 +7,18 @@ const client = require('../../bot/client.js');
 
 function changePlaying(req, res) {
 	if (req.body.playing) {
-		client.instance.user.setGame(req.body.playing);
+		client.instance.user.setActivity(req.body.playing);
 	} else {
-		client.instance.user.setGame(null);
+		client.instance.user.setActivity(null);
 	}
 	res.status(204).send();
 }
 
 function postMessage(req, res) {
 	if (req.body.channel && req.body.message) {
-		const sendChannel = client.instance.channels.get(req.body.channel);
+		const sendChannel = client.instance.channels.cache.get(req.body.channel);
 		if (sendChannel) {
-			sendChannel.sendMessage(req.body.message).catch(function (error) {
+			sendChannel.send(req.body.message).catch(function (error) {
 				console.error(error);
 			});
 		}
