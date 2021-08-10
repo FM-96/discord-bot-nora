@@ -1,6 +1,5 @@
 const base65536 = require('base65536');
-
-const utilityFunctions = require('../../utilityFunctions.js');
+const got = require('got');
 
 module.exports = {
 	command: 'encfile',
@@ -11,7 +10,7 @@ module.exports = {
 		if (!message.attachments.size) {
 			return message.channel.send('No file found.');
 		}
-		const buffer = await utilityFunctions.httpRequest(message.attachments.first().proxyURL);
+		const buffer = await got(message.attachments.first().proxyURL).buffer();
 		return message.channel.send(base65536.encode(buffer));
 	},
 };

@@ -2,9 +2,7 @@ const path = require('path');
 
 const commandHandler = require('command-handler');
 
-const userId = require('../../config/user_ids.js');
-
-commandHandler.setOwnerId(userId.fm96);
+commandHandler.setOwnerId(process.env.OWNER_ID);
 commandHandler.setGlobalPrefixes('§');
 
 // register commands

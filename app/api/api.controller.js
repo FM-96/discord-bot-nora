@@ -1,7 +1,9 @@
-module.exports.changePlaying = changePlaying;
-module.exports.postMessage = postMessage;
-module.exports.reconnect = reconnect;
-module.exports.restart = restart;
+module.exports = {
+	changePlaying,
+	postMessage,
+	reconnect,
+	restart,
+};
 
 const client = require('../../bot/client.js');
 

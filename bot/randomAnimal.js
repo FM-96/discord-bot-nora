@@ -1,4 +1,4 @@
-const utilityFunctions = require('../utilityFunctions.js');
+const got = require('got');
 
 module.exports = async (animal) => {
 	let target;
@@ -19,9 +19,8 @@ module.exports = async (animal) => {
 
 	let randomFile;
 	do {
-		const responseBuffer = await utilityFunctions.httpRequest(target.url);
-		const responseString = responseBuffer.toString();
-		randomFile = JSON.parse(responseString)[target.fileProperty];
+		const response = await got(target.url).text();
+		randomFile = JSON.parse(response)[target.fileProperty];
 	} while (/(\.mp4|\.webm)$/i.test(randomFile));
 
 	return randomFile;

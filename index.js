@@ -14,9 +14,6 @@ const globalStorage = require('./bot/globalStorage.js');
 const routes = require('./app/routes.js');
 const web = require('./webserver.js');
 
-// load configs
-const webConfig = require('./config/web.js');
-
 const client = require('./bot/client.js');
 globalStorage.set('startupTime', Date.now());
 
@@ -33,7 +30,7 @@ mongoose.connect(process.env.DATABASE, {useNewUrlParser: true, useUnifiedTopolog
 	console.log('Successfully connected to database');
 
 	// start webserver
-	web.httpServer.listen(webConfig.port);
+	web.httpServer.listen(process.env.PORT);
 }).catch(error => {
 	if (error) {
 		console.error('Error while connecting to database: ' + error);
