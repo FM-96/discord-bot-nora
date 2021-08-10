@@ -13,9 +13,6 @@ router.get('/', function (req, res) {
 router.get('/restart', function (req, res) {
 	res.sendFile('restart.html', options);
 });
-router.get('/spy', function (req, res) {
-	res.sendFile('spy.html', options);
-});
 
 router.get('/robots.txt', function (req, res) {
 	res.type('txt').send('User-agent: *\nDisallow: /');

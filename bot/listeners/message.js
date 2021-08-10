@@ -1,12 +1,8 @@
 const path = require('path');
 
-const client = require('../client.js');
 const commandHandler = require('command-handler');
-const web = require('../../webserver.js');
 
 const userId = require('../../config/user_ids.js');
-
-// const botVersion = process.env.npm_package_version ? process.env.npm_package_version : require('../../package.json').version;
 
 commandHandler.setOwnerId(userId.fm96);
 commandHandler.setGlobalPrefixes('§');
@@ -36,20 +32,6 @@ try {
 module.exports = async (message) => {
 	if (message.channel.type !== 'text') {
 		return;
-	}
-
-	// TODO convert to task (requires "message.author.id === client.instance.user.id" check as command permission; update: I have that now, so do it!)
-	if (message.guild.id !== '133750021861408768') {
-		const socketMessage = {
-			id: message.id,
-			author: message.author.username,
-			authorBot: message.author.bot,
-			authorSelf: (message.author.id === client.instance.user.id),
-			channel: message.channel.name,
-			server: message.guild.name,
-			content: message.cleanContent,
-		};
-		web.io.emit('message', socketMessage);
 	}
 
 	// explicit commands

@@ -1,18 +1,14 @@
-// const cleverbotIoManager = require('../cleverbotIoManager.js');
+const botVersion = require('../../package.json').version + (process.env.NODE_ENV === 'development' ? '-dev' : ''); // eslint-disable-line global-require
 
 module.exports = {
 	name: 'X-mention',
 	limited: true,
 	test: async (message) => message.mentions.has(message.client.user.id),
 	run: async (message, context) => {
-		// if (message.content.toLowerCase().includes('version')) {
-		// 	message.channel.send('v' + botVersion);
-		// } else {
-		// 	message.channel.send('Yo.');
-		// }
-
-		// cleverbotIoManager.ask(message).then(response =>
-		// 	message.channel.send(response)
-		// ).catch(console.error);
+		if (message.content.toLowerCase().includes('version')) {
+			return message.channel.send('v' + botVersion);
+		} else {
+			return message.channel.send('Yo.');
+		}
 	},
 };
