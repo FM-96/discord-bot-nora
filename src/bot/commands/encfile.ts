@@ -1,16 +1,22 @@
-const base65536 = require('base65536');
-const got = require('got');
+import base65536 from 'base65536';
+import type { Command } from 'command-handler';
+import got from 'got';
 
-module.exports = {
+const command: Command = {
 	command: 'encfile',
+	aliases: [],
 	ownerOnly: false,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		// TODO also allow links to files
 		// TODO test
-		if (!message.attachments.size) {
-			return message.channel.send('No file found.');
+		const attachment = message.attachments.first();
+		if (!attachment) {
+			await message.channel.send('No file found.');
+			return;
 		}
-		const buffer = await got(message.attachments.first().proxyURL).buffer();
-		return message.channel.send(base65536.encode(buffer));
+		const buffer = await got(attachment.proxyURL).buffer();
+		await message.channel.send(base65536.encode(buffer));
 	},
 };
+
+export default command;

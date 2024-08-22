@@ -1,12 +1,16 @@
-const randomAnimal = require('../randomAnimal.js');
+import type { Command } from 'command-handler';
+import randomAnimal from '../randomAnimal';
 
-module.exports = {
+const command: Command = {
 	command: 'cat',
+	aliases: [],
 	description: 'Post a random picture of a cat',
 	usage: '',
 	ownerOnly: false,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		const catImage = await randomAnimal('cat');
-		return message.channel.send({files: [catImage]});
+		await message.channel.send({ files: [catImage] });
 	},
 };
+
+export default command;

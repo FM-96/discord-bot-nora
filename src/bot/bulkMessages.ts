@@ -1,8 +1,10 @@
-module.exports = {
-	cleanup,
-	getChannelMessages,
-	isProtected,
-};
+import type {
+	ChannelLogsQueryOptions,
+	Collection,
+	Message,
+	NewsChannel,
+	TextChannel,
+} from 'discord.js';
 
 /**
  * Delete a specified number of messages of a certain user
@@ -11,73 +13,76 @@ module.exports = {
  * @param {?Number} number How many messages to delete (or null for all messages)
  * @returns {Promise.<Number>} How many messages have been deleted
  */
-async function cleanup(channel, user, number) {
-	console.log('cleaning up ' + (number || 'infinite') + ' messages');
+export async function cleanup(
+	channel: TextChannel | NewsChannel,
+	user: string | null,
+	number: number | null,
+) {
+	console.log(`cleaning up ${number || 'infinite'} messages`);
 	const messages = await getChannelMessages(channel, user, number, null);
 	let flatMsgs = messages;
-	console.log('got ' + flatMsgs.length + ' messages in total');
+	console.log(`got ${flatMsgs.length} messages in total`);
 	if (flatMsgs.length === 0) {
 		return 0;
-	} else {
-		// remove all messages that have a shield emoji reaction
-		flatMsgs = flatMsgs.filter(msg => !isProtected(msg));
-
-		const deleteBulk = [];
-		const deleteSingle = [];
-
-		// bulk delete limit is two weeks; I leave 1 hour of leeway here to be safe
-		const BULK_DELETE_LIMIT = (1000 * 60 * 60 * 24 * 14) - (1000 * 60 * 60);
-		for (const msg of flatMsgs) {
-			if (Date.now() - msg.createdTimestamp < BULK_DELETE_LIMIT) {
-				deleteBulk.push(msg);
-			} else {
-				deleteSingle.push(msg);
-			}
-		}
-
-		// you can't bulkDelete a single message
-		if (deleteBulk.length === 1) {
-			deleteSingle.push(deleteBulk[0]);
-			deleteBulk.length = 0;
-		}
-
-		let deletions = Promise.resolve(false);
-		let amountDeleted = 0;
-
-		if (deleteBulk.length) {
-			for (let i = 0; i <= Math.floor(deleteBulk.length / 100); ++i) {
-				// bulkDelete can only delete up to 100 messages at once
-				deletions = deletions.then(res => {
-					if (res !== false) {
-						amountDeleted += res.size;
-					}
-					return channel.bulkDelete(deleteBulk.slice(i * 100, Math.min((i + 1) * 100, deleteBulk.length)));
-				});
-			}
-			deletions = deletions.then(res => {
-				amountDeleted += res.size;
-				return false;
-			});
-		}
-		if (deleteSingle.length) {
-			for (const msg of deleteSingle) {
-				deletions = deletions.then(res => {
-					if (res !== false) {
-						amountDeleted++;
-					}
-					return msg.delete();
-				});
-			}
-			deletions = deletions.then(res => {
-				amountDeleted++;
-				return false;
-			});
-		}
-
-		deletions = deletions.then(res => amountDeleted);
-
-		return deletions;
 	}
+	// remove all messages that have a shield emoji reaction
+	flatMsgs = flatMsgs.filter((msg) => !isProtected(msg));
+
+	const deleteBulk: Message[] = [];
+	const deleteSingle: Message[] = [];
+
+	// bulk delete limit is two weeks; I leave 1 hour of leeway here to be safe
+	const BULK_DELETE_LIMIT = 1000 * 60 * 60 * 24 * 14 - 1000 * 60 * 60;
+	for (const msg of flatMsgs) {
+		if (Date.now() - msg.createdTimestamp < BULK_DELETE_LIMIT) {
+			deleteBulk.push(msg);
+		} else {
+			deleteSingle.push(msg);
+		}
+	}
+
+	// you can't bulkDelete a single message
+	if (deleteBulk.length === 1) {
+		deleteSingle.push(deleteBulk[0]);
+		deleteBulk.length = 0;
+	}
+
+	let deletions: Promise<false | Message | Collection<string, Message>> = Promise.resolve(false);
+	let amountDeleted = 0;
+
+	if (deleteBulk.length) {
+		for (let i = 0; i <= Math.floor(deleteBulk.length / 100); ++i) {
+			// bulkDelete can only delete up to 100 messages at once
+			deletions = (deletions as Promise<false | Collection<string, Message>>).then((res) => {
+				if (res !== false) {
+					amountDeleted += res.size;
+				}
+				return channel.bulkDelete(
+					deleteBulk.slice(i * 100, Math.min((i + 1) * 100, deleteBulk.length)),
+				);
+			});
+		}
+		deletions = (deletions as Promise<Collection<string, Message>>).then((res) => {
+			amountDeleted += res.size;
+			return false;
+		});
+	}
+	if (deleteSingle.length) {
+		for (const msg of deleteSingle) {
+			deletions = deletions.then((res) => {
+				if (res !== false) {
+					amountDeleted++;
+				}
+				return msg.delete();
+			});
+		}
+		deletions = deletions.then(() => {
+			amountDeleted++;
+			return false;
+		});
+	}
+
+	return deletions.then(() => amountDeleted);
 }
 
 /**
@@ -88,19 +93,24 @@ async function cleanup(channel, user, number) {
  * @param {?String} before The ID of the message before which to start (or null to start at the most recent message)
  * @returns {Promise.<Array.<Object>>} An array of all fetched messages
  */
-async function getChannelMessages(channel, user, amount, before) {
-	console.log('fetching ' + (amount || 'infinite') + ' messages');
+export async function getChannelMessages(
+	channel: TextChannel | NewsChannel,
+	user: string | null,
+	amount: number | null,
+	before: string | null,
+) {
+	console.log(`fetching ${amount || 'infinite'} messages`);
 	const result = [];
 	let lastMessage = before || null;
 	let done = false;
 
 	do {
-		const options = {limit: 100};
+		const options: ChannelLogsQueryOptions = { limit: 100 };
 		if (lastMessage !== null) {
 			options.before = lastMessage;
 		}
 		const messages = await channel.messages.fetch(options);
-		console.log('got ' + messages.size + ' messages');
+		console.log(`got ${messages.size} messages`);
 		if (messages.size) {
 			let correctUser = 0;
 			for (const entry of messages) {
@@ -114,8 +124,8 @@ async function getChannelMessages(channel, user, amount, before) {
 					}
 				}
 			}
-			console.log('got ' + correctUser + ' messages by right user');
-			lastMessage = messages.lastKey();
+			console.log(`got ${correctUser} messages by right user`);
+			lastMessage = messages.lastKey() as string; // lastKey() is not undefined if size > 0
 		} else {
 			console.log('reached end of channel');
 			done = true;
@@ -130,6 +140,6 @@ async function getChannelMessages(channel, user, amount, before) {
  * @param {Message} message The message to check for protection
  * @returns {Boolean} Whether the message is protected
  */
-function isProtected(message) {
-	return message.reactions.cache.some(e => e.emoji.name === '🛡' || e.emoji.name === '🛡️'); // these are different code points
+export function isProtected(message: Message) {
+	return message.reactions.cache.some((e) => e.emoji.name === '🛡' || e.emoji.name === '🛡️'); // these are different code points
 }

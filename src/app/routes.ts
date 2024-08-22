@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
+import apiRouter from './api/api.router';
+import frontendRouter from './frontend/frontend.router';
 
-const apiRouter = require('./api/api.router.js');
-const frontendRouter = require('./frontend/frontend.router.js');
+const router = Router();
 
 router.use('/api/nora', apiRouter);
 router.use('/', frontendRouter);
 
-module.exports = router;
+export default router;

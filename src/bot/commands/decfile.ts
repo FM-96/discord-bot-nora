@@ -1,18 +1,24 @@
-const base65536 = require('base65536');
+import base65536 from 'base65536';
+import type { Command } from 'command-handler';
 
-module.exports = {
+const command: Command = {
 	command: 'decfile',
+	aliases: [],
 	ownerOnly: false,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		// TODO also allow encoded file as attachment
 		// TODO test
 		const encodedFile = message.content.split(' ').slice(1).join(' ');
-		let decodedFile;
+		let decodedFile: Buffer;
 		try {
 			decodedFile = base65536.decode(encodedFile);
-			return message.channel.send({files: [{attachment: decodedFile}]});
+			await message.channel.send({ files: [{ attachment: decodedFile }] });
 		} catch (err) {
-			return message.channel.send(`Could not decode file: ${err.message}`);
+			await message.channel.send(
+				`Could not decode file: ${err instanceof Error ? err.message : err}`,
+			);
 		}
 	},
 };
+
+export default command;

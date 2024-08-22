@@ -1,3 +1,3 @@
-module.exports = (error) => {
-	console.error('Error: ' + error);
+export default (error: Error) => {
+	console.error(`Error: ${error}`);
 };

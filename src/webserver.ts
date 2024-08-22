@@ -1,11 +1,11 @@
-const express = require('express');
-const http = require('http');
+import http from 'node:http';
+import express from 'express';
 
 // create webserver
 const app = express();
 const httpServer = http.createServer(app);
 
-module.exports = {
+export default {
 	app,
 	httpServer,
 };

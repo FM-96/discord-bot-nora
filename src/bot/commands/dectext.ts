@@ -1,17 +1,23 @@
-const base65536 = require('base65536');
+import base65536 from 'base65536';
+import type { Command } from 'command-handler';
 
-module.exports = {
+const command: Command = {
 	command: 'dectext',
+	aliases: [],
 	ownerOnly: false,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		// TODO also allow encoded text as attachment
 		const encodedText = message.content.split(' ').slice(1).join(' ');
-		let decodedText;
+		let decodedText: string;
 		try {
 			decodedText = base65536.decode(encodedText).toString();
-			return message.channel.send(decodedText);
+			await message.channel.send(decodedText);
 		} catch (err) {
-			return message.channel.send(`Could not decode text: ${err.message}`);
+			await message.channel.send(
+				`Could not decode text: ${err instanceof Error ? err.message : err}`,
+			);
 		}
 	},
 };
+
+export default command;

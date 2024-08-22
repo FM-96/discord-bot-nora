@@ -1,3 +1,3 @@
-const purges = {};
+const purges: Record<string, NodeJS.Timeout> = {};
 
-module.export = purges;
+export default purges;

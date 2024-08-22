@@ -1,12 +1,16 @@
-const base65536 = require('base65536');
+import base65536 from 'base65536';
+import type { Command } from 'command-handler';
 
-module.exports = {
+const command: Command = {
 	command: 'enctext',
+	aliases: [],
 	ownerOnly: false,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		// TODO also allow attachments
 		const plainText = message.content.split(' ').slice(1).join(' ');
 		const encodedText = base65536.encode(Buffer.from(plainText));
-		return message.channel.send(encodedText);
+		await message.channel.send(encodedText);
 	},
 };
+
+export default command;

@@ -1,3 +1,3 @@
-module.exports = (warning) => {
-	console.log('Warning: ' + warning);
+export default (warning: string) => {
+	console.log(`Warning: ${warning}`);
 };

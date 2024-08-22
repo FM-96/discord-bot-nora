@@ -1,8 +1,14 @@
-module.exports = {
+import type { Task } from 'command-handler';
+
+const task: Task = {
 	name: 'gay',
 	limited: false,
 	allowBots: true,
 	allowSelf: true,
-	test: async (message) => message.content.match(/\bgay\b/i),
-	run: async (message, context) => message.react('🏳️‍🌈'),
+	test: async (message) => /\bgay\b/i.test(message.content),
+	run: async (message, _context) => {
+		await message.react('🏳️‍🌈');
+	},
 };
+
+export default task;

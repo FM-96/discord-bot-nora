@@ -1,7 +1,7 @@
-const got = require('got');
+import got from 'got';
 
-module.exports = async (animal) => {
-	let target;
+export default async (animal: string) => {
+	let target: { url: string; fileProperty: string };
 
 	if (animal === 'cat') {
 		target = {
@@ -17,7 +17,7 @@ module.exports = async (animal) => {
 		throw new Error('Unsupported animal');
 	}
 
-	let randomFile;
+	let randomFile: string;
 	do {
 		const response = await got(target.url).text();
 		randomFile = JSON.parse(response)[target.fileProperty];

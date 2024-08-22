@@ -1,9 +1,12 @@
-const yargsParser = require('yargs-parser');
+import type { Command } from 'command-handler';
+import type { DMChannel, NewsChannel, TextChannel } from 'discord.js';
+import yargsParser from 'yargs-parser';
 
-module.exports = {
+const command: Command = {
 	command: 'untable',
+	aliases: [],
 	ownerOnly: false,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		const argv = yargsParser(message.content.split(' ').slice(1).join(' '), {
 			alias: {
 				channel: ['c'],
@@ -23,12 +26,13 @@ module.exports = {
 			return;
 		}
 
-		let tableMessagesChannel = message.channel;
+		let tableMessagesChannel: TextChannel | DMChannel | NewsChannel = message.channel;
 		if (argv.channel) {
-			tableMessagesChannel = message.client.channels.cache.get(argv.channel);
-			if (!tableMessagesChannel) {
+			const channel = message.client.channels.cache.get(argv.channel);
+			if (!channel?.isText()) {
 				return;
 			}
+			tableMessagesChannel = channel;
 		}
 
 		let tableString = '';
@@ -50,7 +54,7 @@ module.exports = {
 			return;
 		}
 
-		let title = false;
+		let title: string | false = false;
 		const header = [];
 		const rows = [];
 
@@ -60,7 +64,10 @@ module.exports = {
 			tableStringLines = tableStringLines.slice(2);
 		}
 
-		const columnLengths = tableStringLines[0].slice(1, -1).split('╤').map(e => e.length);
+		const columnLengths = tableStringLines[0]
+			.slice(1, -1)
+			.split('╤')
+			.map((e) => e.length);
 
 		// parse header
 		let headerRow = tableStringLines[1].slice(1, -1);
@@ -87,23 +94,25 @@ module.exports = {
 				untable += ` ${title}`;
 			}
 
-			untable += `\n${header.map(e => (e.length > 0 ? e : ' ')).join('\n')}\n`;
+			untable += `\n${header.map((e) => (e.length > 0 ? e : ' ')).join('\n')}\n`;
 
 			for (const row of rows) {
-				untable += `\n${row.map(e => (e.length > 0 ? e : ' ')).join('\n')}`;
+				untable += `\n${row.map((e) => (e.length > 0 ? e : ' ')).join('\n')}`;
 			}
 		} else {
 			if (title) {
 				untable += `${argv.format ? '\n' : ' '}--title ${argv.quotes || title.length === 0 || title.includes(' ') ? `"${title}"` : title}`;
 			}
 
-			untable += `${argv.format ? '\n' : ' '}--header ${header.map(e => (argv.quotes || e.length === 0 || e.includes(' ') ? `"${e}"` : e)).join(' ')}`;
+			untable += `${argv.format ? '\n' : ' '}--header ${header.map((e) => (argv.quotes || e.length === 0 || e.includes(' ') ? `"${e}"` : e)).join(' ')}`;
 
 			for (const row of rows) {
-				untable += `${argv.format ? '\n' : ' '}--row ${row.map(e => (argv.quotes || e.length === 0 || e.includes(' ') ? `"${e}"` : e)).join(' ')}`;
+				untable += `${argv.format ? '\n' : ' '}--row ${row.map((e) => (argv.quotes || e.length === 0 || e.includes(' ') ? `"${e}"` : e)).join(' ')}`;
 			}
 		}
 
 		await message.channel.send(untable);
 	},
 };
+
+export default command;

@@ -1,10 +1,6 @@
-module.exports = {
-	buildTable,
-};
-
 // TODO: add check for maximum table length
 // https://en.wikipedia.org/wiki/Box-drawing_character
-function buildTable(numColumns, fields, title) {
+export function buildTable(numColumns: number, fields: string[], title?: string) {
 	if (numColumns > fields.length) {
 		return undefined;
 	}
@@ -33,9 +29,9 @@ function buildTable(numColumns, fields, title) {
 
 	let titleLength = 0;
 	if (title) {
-		titleLength = colWidths.reduce((prev, curr) => prev + curr, 0) + ((colWidths.length - 1) * 3); // 3 = padding between columns
+		titleLength = colWidths.reduce((prev, curr) => prev + curr, 0) + (colWidths.length - 1) * 3; // 3 = padding between columns
 		while (titleLength < title.length) {
-			colWidths = colWidths.map(e => e + 1);
+			colWidths = colWidths.map((e) => e + 1);
 			titleLength += colWidths.length;
 		}
 	}
@@ -84,16 +80,16 @@ function buildTable(numColumns, fields, title) {
 	builtTable += '═╣\n';
 
 	// table body
-	for (let i = 0; i < (tableCells.length / numColumns) - 1; ++i) {
+	for (let i = 0; i < tableCells.length / numColumns - 1; ++i) {
 		builtTable += '║ ';
-		for (let j = numColumns * (i + 1); j < (numColumns * (i + 2)) - 1; ++j) {
+		for (let j = numColumns * (i + 1); j < numColumns * (i + 2) - 1; ++j) {
 			builtTable += tablePad(tableCells[j], colWidths[j % numColumns], 'auto');
 			builtTable += ' │ ';
 		}
-		builtTable += tablePad(tableCells[(numColumns * (i + 2)) - 1], colWidths[numColumns - 1], 'auto');
+		builtTable += tablePad(tableCells[numColumns * (i + 2) - 1], colWidths[numColumns - 1], 'auto');
 		builtTable += ' ║\n';
 
-		if (i + 1 < (tableCells.length / numColumns) - 1) {
+		if (i + 1 < tableCells.length / numColumns - 1) {
 			// table row seperator
 			builtTable += '╟─';
 			for (let j = 0; j < numColumns - 1; ++j) {
@@ -117,15 +113,15 @@ function buildTable(numColumns, fields, title) {
 	return builtTable;
 }
 
-function tablePad(str, padLength, align) {
-	let paddedStr;
+function tablePad(str: string, padLength: number, align: 'left' | 'center' | 'right' | 'auto') {
+	let paddedStr: string;
 	if (str.length < padLength) {
 		if (align === 'center') {
 			const left = Math.floor((padLength - str.length) / 2);
 			const right = Math.ceil((padLength - str.length) / 2);
 			paddedStr = ' '.repeat(left) + str + ' '.repeat(right);
 		} else if (align === 'auto') {
-			if (isNaN(str)) {
+			if (Number.isNaN(Number(str))) {
 				paddedStr = str + ' '.repeat(padLength - str.length);
 			} else {
 				paddedStr = ' '.repeat(padLength - str.length) + str;
@@ -134,6 +130,8 @@ function tablePad(str, padLength, align) {
 			paddedStr = str + ' '.repeat(padLength - str.length);
 		} else if (align === 'right') {
 			paddedStr = ' '.repeat(padLength - str.length) + str;
+		} else {
+			throw new Error('Invalid alignment');
 		}
 	} else if (str.length > padLength) {
 		// TODO shorten with '…'?

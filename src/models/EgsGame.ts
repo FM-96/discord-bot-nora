@@ -1,7 +1,11 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const schema = mongoose.Schema({
+interface IEgsGame {
+	gameId: string;
+}
+
+const schema = new mongoose.Schema<IEgsGame>({
 	gameId: String,
 });
 
-module.exports = mongoose.model('EgsGame', schema, 'egsgames');
+export default mongoose.model<IEgsGame>('EgsGame', schema, 'egsgames');

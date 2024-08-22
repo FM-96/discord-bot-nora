@@ -1,14 +1,20 @@
-const botVersion = require('../../package.json').version + (process.env.NODE_ENV === 'development' ? '-dev' : ''); // eslint-disable-line global-require
+import type { Task } from 'command-handler';
+import type { ClientUser } from 'discord.js';
 
-module.exports = {
+const botVersion =
+	require('../../../package.json').version + (process.env.NODE_ENV === 'development' ? '-dev' : '');
+
+const task: Task = {
 	name: 'X-mention',
 	limited: true,
-	test: async (message) => message.mentions.has(message.client.user.id),
-	run: async (message, context) => {
+	test: async (message) => message.mentions.has((message.client.user as ClientUser).id),
+	run: async (message, _context) => {
 		if (message.content.toLowerCase().includes('version')) {
-			return message.channel.send('v' + botVersion);
+			await message.channel.send(`v${botVersion}`);
 		} else {
-			return message.channel.send('Yo.');
+			await message.channel.send('Yo.');
 		}
 	},
 };
+
+export default task;

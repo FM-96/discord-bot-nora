@@ -1,13 +1,20 @@
-const path = require('path');
+import path from 'node:path';
+import {
+	checkCommand,
+	checkTasks,
+	registerCommandsFolder,
+	registerTasksFolder,
+	setGlobalPrefixes,
+	setOwnerId,
+} from 'command-handler';
+import type { Message } from 'discord.js';
 
-const commandHandler = require('command-handler');
-
-commandHandler.setOwnerId(process.env.OWNER_ID);
-commandHandler.setGlobalPrefixes('§');
+setOwnerId(process.env.OWNER_ID as string);
+setGlobalPrefixes('§');
 
 // register commands
 try {
-	const registerResults = commandHandler.registerCommandsFolder(path.join(__dirname, '..', 'commands'));
+	const registerResults = registerCommandsFolder(path.join(__dirname, '..', 'commands'));
 	console.log(`${registerResults.registered} commands registered`);
 	console.log(`${registerResults.disabled} commands disabled`);
 } catch (err) {
@@ -18,7 +25,7 @@ try {
 
 // register tasks
 try {
-	const registerResults = commandHandler.registerTasksFolder(path.join(__dirname, '..', 'tasks'));
+	const registerResults = registerTasksFolder(path.join(__dirname, '..', 'tasks'));
 	console.log(`${registerResults.registered} tasks registered`);
 	console.log(`${registerResults.disabled} tasks disabled`);
 } catch (err) {
@@ -27,7 +34,7 @@ try {
 	process.exit(1);
 }
 
-module.exports = async (message) => {
+export default async (message: Message) => {
 	if (message.channel.type !== 'text') {
 		return;
 	}
@@ -35,7 +42,7 @@ module.exports = async (message) => {
 	// explicit commands
 	let commandMatch = false;
 	try {
-		const commandResults = await commandHandler.checkCommand(message);
+		const commandResults = await checkCommand(message);
 		commandMatch = commandResults.match;
 	} catch (err) {
 		console.error('Error while checking commands:');
@@ -44,7 +51,7 @@ module.exports = async (message) => {
 
 	// tasks (i.e. context commmands)
 	try {
-		await commandHandler.checkTasks(message, commandMatch);
+		await checkTasks(message, commandMatch);
 	} catch (err) {
 		console.error('Error while checking tasks:');
 		console.error(err);

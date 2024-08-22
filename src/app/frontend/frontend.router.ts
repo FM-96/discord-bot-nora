@@ -1,21 +1,21 @@
-const express = require('express');
-const router = express.Router();
+import path from 'node:path';
+import { Router } from 'express';
 
-const path = require('path');
+const router = Router();
 
 const options = {
 	root: path.join(__dirname, '..', '..', 'public'),
 };
 
-router.get('/', function (req, res) {
+router.get('/', (_req, res) => {
 	res.sendFile('index.html', options);
 });
-router.get('/restart', function (req, res) {
+router.get('/restart', (_req, res) => {
 	res.sendFile('restart.html', options);
 });
 
-router.get('/robots.txt', function (req, res) {
+router.get('/robots.txt', (_req, res) => {
 	res.type('txt').send('User-agent: *\nDisallow: /');
 });
 
-module.exports = router;
+export default router;

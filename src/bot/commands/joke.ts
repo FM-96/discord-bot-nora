@@ -1,18 +1,21 @@
-const dadJokes = require('../jokes/dadJokes.js');
-const mitsukuJokes = require('../jokes/mitsukuJokes.js');
+import type { Command } from 'command-handler';
+import { getJoke as getDadJoke } from '../jokes/dadJokes';
+import { getJoke as getMitsukuJoke } from '../jokes/mitsukuJokes';
 
-module.exports = {
+const command: Command = {
 	command: 'joke',
+	aliases: [],
 	description: 'Post a random joke',
 	usage: '',
 	ownerOnly: false,
-	run: async (message, context) => {
-		let randomJoke;
+	run: async (message, _context) => {
+		let randomJoke: string;
 		if (Math.random() < 0.7) {
-			randomJoke = await dadJokes.getJoke();
+			randomJoke = await getDadJoke();
 		} else {
-			randomJoke = await mitsukuJokes.getJoke();
+			randomJoke = await getMitsukuJoke();
 		}
-		return message.channel.send(randomJoke);
+		await message.channel.send(randomJoke);
 	},
 };
+export default command;

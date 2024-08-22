@@ -1,10 +1,14 @@
-const client = require('../client.js');
+import type { Command } from 'command-handler';
+import client from '../client';
 
-module.exports = {
+const command: Command = {
 	command: 'logout',
+	aliases: [],
 	ownerOnly: true,
-	run: async (message, context) => {
+	run: async (message, _context) => {
 		await message.channel.send('Logging out...');
 		await client.logout();
 	},
 };
+
+export default command;

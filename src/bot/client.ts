@@ -1,29 +1,33 @@
-const Discord = require('discord.js');
+import fs from 'node:fs';
+import path from 'node:path';
+import { Client, Intents } from 'discord.js';
+import globalStorage from './globalStorage';
 
-const fs = require('fs');
-const path = require('path');
+interface InstanceData {
+	instance?: Client;
+	logout: typeof logout;
+	resetClient: typeof resetClient;
+}
 
-const globalStorage = require('./globalStorage.js');
-
-module.exports = {
-	instance: null,
+const instanceData: InstanceData = {
+	instance: undefined,
 	logout,
 	resetClient,
 };
 
 // initial login
-resetClient().catch(err => {
+resetClient().catch((err) => {
 	console.error('Error while logging in:');
 	console.error(err);
 	process.exit(1);
 });
 
-function attachListeners(client) {
+function attachListeners(client: Client) {
 	try {
 		const listeners = fs.readdirSync(path.join(__dirname, 'listeners'));
 		for (const listener of listeners) {
-			const eventName = listener.slice(0, listener.length - 3); // 3 = '.js'
-			client.on(eventName, require('./listeners/' + listener)); // eslint-disable-line global-require
+			const eventName = listener.slice(0, listener.length - 3); // 3 = '.ts'
+			client.on(eventName, require(`./listeners/${listener}`).default);
 		}
 	} catch (err) {
 		console.error('Error while attaching listeners:');
@@ -34,9 +38,9 @@ function attachListeners(client) {
 
 function logout() {
 	// destroy old client
-	if (module.exports.instance) {
-		const client = module.exports.instance;
-		module.exports.instance = undefined;
+	if (instanceData.instance) {
+		const client = instanceData.instance;
+		instanceData.instance = undefined;
 		// remove all listeners to prevent the disconnect event from firing and *also* logging the bot back in
 		client.removeAllListeners();
 		client.destroy();
@@ -45,23 +49,25 @@ function logout() {
 
 async function resetClient() {
 	// destroy old client
-	if (module.exports.instance) {
+	if (instanceData.instance) {
 		// remove all listeners to prevent the disconnect event from firing and *also* logging the bot back in
-		module.exports.instance.removeAllListeners();
-		module.exports.instance.destroy();
+		instanceData.instance.removeAllListeners();
+		instanceData.instance.destroy();
 	}
 
 	// create new client
-	module.exports.instance = new Discord.Client({
+	instanceData.instance = new Client({
 		ws: {
-			intents: Discord.Intents.ALL,
+			intents: Intents.ALL,
 		},
 	});
-	attachListeners(module.exports.instance);
+	attachListeners(instanceData.instance);
 
 	// log in
-	await module.exports.instance.login(process.env.BOT_TOKEN);
+	await instanceData.instance.login(process.env.BOT_TOKEN);
 	globalStorage.set('loginTime', Date.now());
 
 	console.log('Successfully logged in');
 }
+
+export default instanceData;
