@@ -10,7 +10,7 @@ const task: Task = {
 		message.author.id === '216179498683596802' &&
 		Boolean(
 			message.content.match(
-				RegExp(
+				new RegExp(
 					`^Hey <@103255776218345472>, your bot <@!?${(message.client.user as ClientUser).id})> has just gone offline!$`,
 				),
 			),
